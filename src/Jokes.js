@@ -54,10 +54,12 @@ class Jokes extends Component {
       this.state.jokes.map(async s => {
         let strObj = await this.getJoke();
         strObj.data.score = 0;
+        strObj.data.up = false;
+        strObj.data.down = false;
+
         return strObj.data;
       })
     );
-    console.log('recdJokes', recdJokes);
     // Style Optimal
     let jokesNoDup = [];
     let seen = new Set();
@@ -66,8 +68,9 @@ class Jokes extends Component {
       while (seen.has(joke.id)) {
         let newSingleJoke = await this.getJoke();
         newSingleJoke.data.score = 0;
+        newSingleJoke.data.up = false;
+        newSingleJoke.data.down = false;
         joke = newSingleJoke.data;
-        console.log('Got a new single joke');
       }
       jokesNoDup.push(joke);
       seen.add(joke.id);
@@ -85,8 +88,20 @@ class Jokes extends Component {
     let newObj = [...this.state.jokes];
     if (operation === 'add') {
       newObj[idx].score++;
+      newObj[idx].up = true;
+      setTimeout(() => {
+        newObj = [...this.state.jokes];
+        newObj[idx].up = false;
+        this.setState({ jokes: newObj });
+      }, 1000);
     } else {
       newObj[idx].score--;
+      newObj[idx].down = true;
+      setTimeout(() => {
+        newObj = [...this.state.jokes];
+        newObj[idx].down = false;
+        this.setState({ jokes: newObj });
+      }, 1000);
     }
     this.setState({ jokes: newObj });
   }
@@ -98,18 +113,18 @@ class Jokes extends Component {
   }
 
   renderJokes() {
-    console.log('in render jokes', this.state.jokes);
     return this.state.jokes[0] ? (
       this.state.jokes
         .map((joke, i) =>
           joke ? (
-            <StyledJokes>
+            <StyledJokes key={joke.id}>
               <Joke
                 jokeComp={joke.joke}
                 score={joke.score}
-                key={joke.id}
                 changeScore={this.changeScore}
                 idx={i}
+                up={joke.up}
+                down={joke.down}
               />
             </StyledJokes>
           ) : null
@@ -124,7 +139,6 @@ class Jokes extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <StyledJokes>
         <button onClick={this.getNewJokes}>Get New Jokes</button>

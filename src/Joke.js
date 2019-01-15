@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const StyledJoke = styled.div`
   display: flex;
@@ -8,8 +8,21 @@ const StyledJoke = styled.div`
   background-color: firebrickred;
 `;
 
+const spin = keyframes`
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+`;
+
 const StyledBtn = styled.button`
   margin: 5px;
+
+  &.spinning {
+    animation: 1s ${spin} infinite linear;
+  }
 `;
 
 class Joke extends Component {
@@ -29,14 +42,24 @@ class Joke extends Component {
 
   render() {
     const { score, jokeComp } = this.props;
+    const up = this.props.up ? 'spinning' : '';
+    const down = this.props.down ? 'spinning' : '';
     return (
       <StyledJoke>
         <p>Score is {score} </p>
-        <StyledBtn onClick={this.handleVoteUp}>
-          <i class="fas fa-thumbs-up" />
+        <StyledBtn
+          className={up}
+          onClick={this.handleVoteUp}
+          disabled={this.props.up}
+        >
+          <i className="fas fa-thumbs-up" />
         </StyledBtn>
-        <StyledBtn onClick={this.handleVoteDn}>
-          <i class="fas fa-thumbs-down" />
+        <StyledBtn
+          className={down}
+          onClick={this.handleVoteDn}
+          disabled={this.props.down}
+        >
+          <i className="fas fa-thumbs-down" />
         </StyledBtn>
         <p>{jokeComp}</p>
       </StyledJoke>
