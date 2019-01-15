@@ -1,0 +1,12 @@
+/* #spinner {
+  animation: circle-spin infinite 1s linear;
+}
+
+@keyframes circle-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
